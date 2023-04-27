@@ -32,7 +32,7 @@ const (
 )
 
 /*
-	MSG结构体
+MSG结构体
 
 	typedef struct tagMSG {
 		HWND hwnd;
@@ -68,7 +68,7 @@ BOOL GetMessage(
 );
 */
 func GetMessage(pMsg *MSG, hWnd HWND, wMsgFilterMin uint32, wMsgFilterMax uint32) int32 {
-	r1, _, _ := syscall.Syscall6(procGetMessage.Addr(), 4, uintptr(unsafe.Pointer(pMsg)), uintptr(hWnd), uintptr(wMsgFilterMin), uintptr(wMsgFilterMax), 0, 0)
+	r1, _, _ := syscall.SyscallN(procGetMessage.Addr(), 4, uintptr(unsafe.Pointer(pMsg)), uintptr(hWnd), uintptr(wMsgFilterMin), uintptr(wMsgFilterMax), 0, 0)
 	return int32(r1)
 }
 
@@ -84,9 +84,9 @@ BOOL TranslateMessage(
 );
 */
 func TranslateMessage(pMsg *MSG) error {
-	r1, _, _ := syscall.Syscall(procTranslateMessage.Addr(), 1, uintptr(unsafe.Pointer(pMsg)), 0, 0)
+	r1, _, _ := syscall.SyscallN(procTranslateMessage.Addr(), 1, uintptr(unsafe.Pointer(pMsg)), 0, 0)
 	if r1 == 0 {
-		return errors.New("winapi: TranslateMessage failed.")
+		return errors.New("winapi: TranslateMessage failed")
 	} else {
 		return nil
 	}
@@ -104,7 +104,7 @@ LRESULT DispatchMessage(
 );
 */
 func DispatchMessage(pMsg *MSG) uintptr {
-	r1, _, _ := syscall.Syscall(procDispatchMessage.Addr(), 1, uintptr(unsafe.Pointer(pMsg)), 0, 0)
+	r1, _, _ := syscall.SyscallN(procDispatchMessage.Addr(), 1, uintptr(unsafe.Pointer(pMsg)), 0, 0)
 	return r1
 }
 
@@ -120,7 +120,7 @@ void PostQuitMessage(
 );
 */
 func PostQuitMessage(ExitCode int32) {
-	syscall.Syscall(procPostQuitMessage.Addr(), 1, uintptr(ExitCode), 0, 0)
+	syscall.SyscallN(procPostQuitMessage.Addr(), 1, uintptr(ExitCode), 0, 0)
 }
 
 /*
@@ -139,13 +139,13 @@ func RegisterWindowMessage(str string) (message uint32, err error) {
 	if err != nil {
 		return
 	}
-	r1, _, e1 := syscall.Syscall(procRegisterWindowMessage.Addr(), 1, uintptr(unsafe.Pointer(p)), 0, 0)
+	r1, _, e1 := syscall.SyscallN(procRegisterWindowMessage.Addr(), 1, uintptr(unsafe.Pointer(p)), 0, 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: RegisterWindowMessage failed.")
+			err = errors.New("winapi: RegisterWindowMessage failed")
 		}
 	} else {
 		message = uint32(r1)

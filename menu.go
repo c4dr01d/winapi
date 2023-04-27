@@ -75,13 +75,13 @@ func AppendMenu(hMenu HMENU, Flags uint32, IdNewItem uintptr, NewItem string) er
 }
 
 func _AppendMenu(hMenu HMENU, Flags uint32, IdNewItem uintptr, NewItem *uint16) (err error) {
-	r1, _, e1 := syscall.Syscall6(procAppendMenu.Addr(), 4, uintptr(hMenu), uintptr(Flags), IdNewItem, uintptr(unsafe.Pointer(NewItem)), 0, 0)
+	r1, _, e1 := syscall.SyscallN(procAppendMenu.Addr(), 4, uintptr(hMenu), uintptr(Flags), IdNewItem, uintptr(unsafe.Pointer(NewItem)), 0, 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: AppendMenu failed.")
+			err = errors.New("winapi: AppendMenu failed")
 		}
 	}
 	return
@@ -95,13 +95,13 @@ func _AppendMenu(hMenu HMENU, Flags uint32, IdNewItem uintptr, NewItem *uint16) 
 HMENU CreateMenu();
 */
 func CreateMenu() (hMenu HMENU, err error) {
-	r1, _, e1 := syscall.Syscall(procCreateMenu.Addr(), 0, 0, 0, 0)
+	r1, _, e1 := syscall.SyscallN(procCreateMenu.Addr(), 0, 0, 0, 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: CreateMenu failed.")
+			err = errors.New("winapi: CreateMenu failed")
 		}
 	} else {
 		hMenu = HMENU(r1)
@@ -117,13 +117,13 @@ func CreateMenu() (hMenu HMENU, err error) {
 HMENU CreatePopupMenu();
 */
 func CreatePopupMenu() (hMenu HMENU, err error) {
-	r1, _, e1 := syscall.Syscall(procCreatePopupMenu.Addr(), 0, 0, 0, 0)
+	r1, _, e1 := syscall.SyscallN(procCreatePopupMenu.Addr(), 0, 0, 0, 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: CreatePopupMenu failed.")
+			err = errors.New("winapi: CreatePopupMenu failed")
 		}
 	} else {
 		hMenu = HMENU(r1)
@@ -143,13 +143,13 @@ BOOL DestroyMenu(
 );
 */
 func DestroyMenu(hMenu HMENU) (err error) {
-	r1, _, e1 := syscall.Syscall(procDestroyMenu.Addr(), 1, uintptr(hMenu), 0, 0)
+	r1, _, e1 := syscall.SyscallN(procDestroyMenu.Addr(), 1, uintptr(hMenu), 0, 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: DestroyMenu failed.")
+			err = errors.New("winapi: DestroyMenu failed")
 		}
 	}
 	return

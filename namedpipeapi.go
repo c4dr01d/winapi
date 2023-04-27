@@ -47,13 +47,13 @@ BOOL ConnectNamedPipe(
 );
 */
 func ConnectNamedPipe(hNamedPipe HANDLE, po *OVERLAPPED) (err error) {
-	r1, _, e1 := syscall.Syscall(procConnectNamedPipe.Addr(), 2, uintptr(hNamedPipe), uintptr(unsafe.Pointer(po)), 0)
+	r1, _, e1 := syscall.SyscallN(procConnectNamedPipe.Addr(), 2, uintptr(hNamedPipe), uintptr(unsafe.Pointer(po)), 0)
 	if r1 == 0 {
 		wec := WindowsErrorCode(e1)
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("ConnectNamedPipe failed.")
+			err = errors.New("ConnectNamedPipe failed")
 		}
 	}
 	return
@@ -105,7 +105,7 @@ func _CreateNamedPipe(
 	nDefaultTimeOut uint32,
 	pSecurityAttributes *SECURITY_ATTRIBUTES,
 ) (h HANDLE, err error) {
-	r1, _, e1 := syscall.Syscall9(
+	r1, _, e1 := syscall.SyscallN(
 		procCreateNamedPipe.Addr(),
 		8,
 		uintptr(unsafe.Pointer(pName)),
@@ -123,7 +123,7 @@ func _CreateNamedPipe(
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("CreateNamedPipe failed.")
+			err = errors.New("CreateNamedPipe failed")
 		}
 	} else {
 		h = HANDLE(r1)

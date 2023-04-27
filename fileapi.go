@@ -48,7 +48,7 @@ func CreateFile(
 	if err != nil {
 		return 0, err
 	}
-	r1, _, e1 := syscall.Syscall9(
+	r1, _, e1 := syscall.SyscallN(
 		procCreateFile.Addr(),
 		7,
 		uintptr(unsafe.Pointer(pFileName)),
@@ -65,7 +65,7 @@ func CreateFile(
 		if wec != 0 {
 			return 0, wec
 		} else {
-			return 0, errors.New("CreateFile failed.")
+			return 0, errors.New("CreateFile failed")
 		}
 	} else {
 		return HANDLE(r1), nil
@@ -110,7 +110,7 @@ func _ReadFile(
 	pNumberOfBytesRead *uint32,
 	pOverlapped *OVERLAPPED,
 ) error {
-	r1, _, e1 := syscall.Syscall6(
+	r1, _, e1 := syscall.SyscallN(
 		procReadFile.Addr(),
 		5,
 		uintptr(hFile),
@@ -125,7 +125,7 @@ func _ReadFile(
 		if wec != 0 {
 			return wec
 		} else {
-			return errors.New("winapi: ReadFile failed.")
+			return errors.New("winapi: ReadFile failed")
 		}
 	} else {
 		return nil
@@ -170,7 +170,7 @@ func _WriteFile(
 	pNumberOfBytesWritten *uint32,
 	pOverlapped *OVERLAPPED,
 ) error {
-	r1, _, e1 := syscall.Syscall6(
+	r1, _, e1 := syscall.SyscallN(
 		procWriteFile.Addr(),
 		5,
 		uintptr(hFile),
@@ -185,7 +185,7 @@ func _WriteFile(
 		if wec != 0 {
 			return wec
 		} else {
-			return errors.New("winapi: WriteFile failed.")
+			return errors.New("winapi: WriteFile failed")
 		}
 	} else {
 		return nil
@@ -214,7 +214,7 @@ DWORD SetFilePointer(
 */
 func SetFilePointer(hFile HANDLE, DistanceToMove int64, MoveMethod uint32) (NewPointer int64, err error) {
 	var np int64
-	r1, _, e1 := syscall.Syscall6(
+	r1, _, e1 := syscall.SyscallN(
 		procSetFilePointer.Addr(),
 		4,
 		uintptr(hFile),
@@ -228,7 +228,7 @@ func SetFilePointer(hFile HANDLE, DistanceToMove int64, MoveMethod uint32) (NewP
 		if wec != 0 {
 			err = wec
 		} else {
-			err = errors.New("winapi: SetFilePointer failed.")
+			err = errors.New("winapi: SetFilePointer failed")
 		}
 	} else {
 		NewPointer = np
